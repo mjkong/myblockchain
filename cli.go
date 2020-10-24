@@ -76,7 +76,6 @@ func (cli *CLI) send(from, to string, amount int) {
 	fmt.Println("Success!")
 }
 
-// Run parses command line arguments and processes commands
 func (cli *CLI) Run() {
 	cli.validateArgs()
 

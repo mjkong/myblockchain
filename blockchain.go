@@ -148,7 +148,6 @@ func (bc *Blockchain) Iterator() *BlockchainIterator {
 	return bci
 }
 
-// Next returns next block starting from the tip
 func (i *BlockchainIterator) Next() *Block {
 	var block *Block
 
@@ -177,7 +176,6 @@ func dbExists() bool {
 	return true
 }
 
-// NewBlockchain creates a new Blockchain with genesis Block
 func NewBlockchain(address string) *Blockchain {
 	if dbExists() == false {
 		fmt.Println("No existing blockchain found. Create one first.")
@@ -206,7 +204,6 @@ func NewBlockchain(address string) *Blockchain {
 	return &bc
 }
 
-// CreateBlockchain creates a new blockchain DB
 func CreateBlockchain(address string) *Blockchain {
 	if dbExists() {
 		fmt.Println("Blockchain already exists.")
