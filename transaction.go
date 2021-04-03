@@ -44,8 +44,8 @@ type TXInput struct {
 }
 
 type TXOutput struct {
-	Value        int
-	PubKeyHash   []byte
+	Value      int
+	PubKeyHash []byte
 }
 
 func (tx Transaction) IsCoinbase() bool {
@@ -106,9 +106,24 @@ func (tx *Transaction) Sign(privKey ecdsa.PrivateKey, prevTXs map[string]Transac
 	txCopy := tx.TrimmedCopy()
 
 	/*
-	Code for add signature to TX
-	 */
+		Code for add signature to TX
+	*/
+	for inID, vin := range txCopy.Vin {
+		prevTx := prevTXs[hex.EncodeToString(vin.Txid)]
+		txCopy.Vin[inID].Signature = nil
+		txCopy.Vin[inID].PubKey = prevTx.Vout[vin.Vout].PubKeyHash
+		txCopy.ID = txCopy.Hash()
+		txCopy.Vin[inID].PubKey = nil
 
+		r, s, err := ecdsa.Sign(rand.Reader, &privKey, txCopy.ID)
+		if err != nil {
+			log.Panic(err)
+		}
+
+		signature := append(r.Bytes(), s.Bytes()...)
+
+		tx.Vin[inID].Signature = signature
+	}
 }
 
 func (tx Transaction) String() string {
